@@ -1,4 +1,4 @@
-var Trealos = artifacts.require("./Token.sol");
+var Trealos = artifacts.require("Trealos");
 
 module.exports = function(deployer) {
   // deployment steps
