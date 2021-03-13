@@ -51,7 +51,7 @@ contract Trealos is ERC20 {
     }
 
     function getToken(uint value, address sender) internal {
-        value/=1000000000000000000;
+        value/=100000000000000;
         require(
             value!=0,
             "Value is 0"
