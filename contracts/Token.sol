@@ -13,30 +13,12 @@ contract Trealos is ERC20 {
     address[] public users;
     address public admin;
     uint randNonce = 0; 
+    uint public tokenDistributed=0;
 
     constructor() ERC20("Trealos", "TRL") {
         _setupDecimals(2);
         maxSupply=1001002093092000000000000000000000090000;
         admin = msg.sender;
-    }
-
-    function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
-    if (_i == 0) {
-        return "0";
-    }
-    uint j = _i;
-    uint len;
-    while (j != 0) {
-        len++;
-        j /= 10;
-    }
-    bytes memory bstr = new bytes(len);
-    uint k = len - 1;
-    while (_i != 0) {
-        bstr[k--] = byte(uint8(48 + _i % 10));
-        _i /= 10;
-    }
-    return string(bstr);
     }
 
     modifier isWhiteListed() {
@@ -51,7 +33,7 @@ contract Trealos is ERC20 {
     }
 
     function getToken(uint value, address sender) internal {
-        value/=100000000000000;
+        value/=1000000000000000000;
         require(
             value!=0,
             "Value is 0"
@@ -62,6 +44,7 @@ contract Trealos is ERC20 {
             totalSupply()+value*100*tiers<maxSupply,    //msg.value is in wei
             string(abi.encodePacked("Amount is too high there are only ", uint2str(maxSupply-totalSupply())," TRL remaining"))
         ); 
+        tokenDistributed+=value*100*tiers;
         
         _mint(sender, value*100*tiers);
     }
@@ -106,8 +89,7 @@ contract Trealos is ERC20 {
         address luckyOne = users[randMod(users.length)];
         _mint(luckyOne, 100);
     }
-    // Defining a function to generate 
-    // a random number 
+     
     function randMod(uint max) internal returns(uint)  
     { 
        // increase nonce 
@@ -116,4 +98,23 @@ contract Trealos is ERC20 {
                                               msg.sender,  
                                               randNonce))) % max; 
     } 
+
+    function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
+    if (_i == 0) {
+        return "0";
+    }
+    uint j = _i;
+    uint len;
+    while (j != 0) {
+        len++;
+        j /= 10;
+    }
+    bytes memory bstr = new bytes(len);
+    uint k = len - 1;
+    while (_i != 0) {
+        bstr[k--] = byte(uint8(48 + _i % 10));
+        _i /= 10;
+    }
+    return string(bstr);
+    }
 }
