@@ -10,8 +10,8 @@ contract Trealos is ERC20 {
     uint256 private maxSupply;
     mapping (address => uint) public whitelist;
     mapping (address => uint) amountSentUsers;
-    address[] users;
-    address admin;
+    address[] public users;
+    address public admin;
     uint randNonce = 0; 
 
     constructor() ERC20("Trealos", "TRL") {
@@ -38,28 +38,30 @@ contract Trealos is ERC20 {
     }
     return string(bstr);
     }
-    
-    fallback()
-    external
-    payable { 
-        msg.value/=1000000000000000000;
-        getToken(msg.value,msg.sender)
+
+    modifier isWhiteListed() {
+        require(whitelist[msg.sender] > 0, "address is not whitelisted");
+        _;
     }
 
-    function getToken(uint value, address sender) internal{
-        uint tiers = checkTiers(value, sender);
-        require(
-            totalSupply()+value*100*tiers<maxSupply,    //msg.value is in wei
-            string(abi.encodePacked("Amount is too high there are only ", uint2str(maxSupply-totalSupply())," TRL remaining")
-        ); 
+    fallback()
+    external
+    payable isWhiteListed{ 
+        getToken(msg.value,msg.sender);
+    }
+
+    function getToken(uint value, address sender) internal {
+        value/=1000000000000000000;
         require(
             value!=0,
             "Value is 0"
         );
+
+        uint tiers = checkTiers(value, sender);
         require(
-            whitelist[sender] > 0,
-            "User is not whitelisted"
-        );
+            totalSupply()+value*100*tiers<maxSupply,    //msg.value is in wei
+            string(abi.encodePacked("Amount is too high there are only ", uint2str(maxSupply-totalSupply())," TRL remaining"))
+        ); 
         
         _mint(sender, value*100*tiers);
     }
@@ -103,9 +105,6 @@ contract Trealos is ERC20 {
         );
         address luckyOne = users[randMod(users.length)];
         _mint(luckyOne, 100);
-    }
-    function whiteList ()public view returns( address  [] memory){
-        return users;
     }
     // Defining a function to generate 
     // a random number 
