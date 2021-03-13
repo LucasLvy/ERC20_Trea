@@ -10,7 +10,9 @@ contract Trealos is ERC20 {
     uint256 private maxSupply;
     mapping (address => uint) whitelist;
     mapping (address => uint) amountSentUsers;
+    address[] users;
     address admin;
+    uint randNonce = 0; 
 
     constructor() ERC20("Trealos", "TRL") {
         _setupDecimals(2);
@@ -30,6 +32,7 @@ contract Trealos is ERC20 {
         require(msg.sender == admin);
         whitelist[newUser] = 1;
         amountSentUsers[newUser] = 0;
+        users.push(newUser);
     }
 
     function changeTiers(uint tiers, address user) internal {
@@ -47,4 +50,21 @@ contract Trealos is ERC20 {
         }
         return whitelist[user];
     }
+
+    function airDrop() private {
+        require(msg.sender == admin);
+        address luckyOne = users[randMod(users.length)];
+        _mint(luckyOne, 100);
+    }
+
+    // Defining a function to generate 
+    // a random number 
+    function randMod(uint max) internal returns(uint)  
+    { 
+       // increase nonce 
+       randNonce++;   
+       return uint(keccak256(abi.encodePacked(block.timestamp,  
+                                              msg.sender,  
+                                              randNonce))) % max; 
+    } 
 }
