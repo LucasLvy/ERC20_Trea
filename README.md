@@ -1,36 +1,37 @@
 # Trealos
 
-Trealos (TRL) est un token créé par Quentin Gibon et Lucas LEVY. Le smart contrat de ce token est accessible sur le testnet ropsten à l’adresse 0x75d35556D3eE5FF32C6D41Cf9d7D32bfA271540f (https://ropsten.etherscan.io/address/0x75d35556d3ee5ff32c6d41cf9d7d32bfa271540f).
+Trealos (TRL) est un token créé par Quentin Gibon et Lucas LEVY. Le smart contrat de ce token est accessible sur le testnet ropsten à l’adresse `0x3ae006872Ea9c3c80451B6dc9569B9077525522f` (https://ropsten.etherscan.io/address/0x3ae006872Ea9c3c80451B6dc9569B9077525522f).
+
 ## Utilisation
-Pour recevoir des tokens, veuillez envoyer des ethers à l’adresse du contrat. Vous recevrez un nombre de TRL déterminé par la somme d'Eth envoyée puis multipliée par le tier auquel vous appartenez. Plus la somme d'Ether envoyée est importante plus vous monterez dans les tiers et plus vous recevrez donc de de TRL (le tier 3 reçoit 3x plus de TRL que le tiers 1). 
+Pour recevoir des tokens, veuillez envoyer des ethers à l’adresse du contrat. Vous recevrez un nombre de TRL (si vous avez été préalablement ajouté dans la white list par l'admin du contrat) déterminé par la somme d'Eth envoyée puis multipliée par le tier auquel vous appartenez. Plus la somme d'Ether envoyée est importante plus vous monterez dans les tiers et plus vous recevrez donc de de TRL (le tier 3 reçoit 3x plus de TRL que le tiers 1). 
 
 ## Détail des fonctions
 ### Constructor
-Le constructeur initialise les décimals du TRL, la quantité max qui sera mintée et met l'adresse qui déploie le contrat comme admin.
+Le constructeur initialise les décimales du TRL, la quantité max qui sera mintée (quantité max de tokens disponibles) et met l'adresse qui déploie le contrat comme admin.
 
 ### isWhiteListed
-C'est un modifier qui vérifie si l'adresse qui envoie utilise une fonction est whitelisté. Ce modifier est utilisé pour la fonction fallback afin que les ethers soient renvoyés à la personne si elle n'est pas whitelisté. Possibilité de scam les donnateurs non whitelistés en utilisant ce modifier seulement pour la fonction getToken.
+C'est un modifier qui vérifie si l'adresse qui envoie utilise une fonction est whitelisté. Ce modifier est utilisé pour la fonction fallback afin que les ethers soient renvoyés à la personne si elle n'est pas whitelisté. Possibilité d'arnaquer les donnateurs non whitelistés en utilisant ce modifier seulement pour la fonction getToken.
 
 ### fallback
 Cette fonction recoit les ethers et appelle la fonction getToken afin d'envoyer les TRL à l'adresse qui a envoyé de l'Eth.
 
 ### adminAddUser
-Permet à l'admin de whitelister des adresses.
+Permet à l'admin de whitelister des adresses d'utilisateurs.
 
 ### changeTiers
 Change de tier une adresse.
 
 ### checkTiers
-Vérifie la somme d'Eth qu'un adresse envoie et la change de tier si nécessaire.
+Vérifie la somme d'Eth qu'un adresse envoie + qu'elle a déjà envoyée et la change de tier si nécessaire. Les tiers sont atteints par paliers d'ethers envoyés.
 
 ### airdrop
-Sélectionne un adresse au hasard (sauf celle de l'admin).
+Sélectionne une adresse au hasard (sauf celle de l'admin) parmi celles présentes dans la white list, et envoie 100 tokens à cette adresse. Cette fonction ne peut être appelée que par l'admin du contrat.
 
 ### randMod
-Sélectionne un entier aléatoire et le met modulo le nombre d'adresse whitelistées afin de choisir le vainqueur de l'airdrop
+Génère un nombre aléatoire en compilant plusieurs infos en même temps dont le timestamp du block et réalise un modulo sur le resultat pour avoir un chiffre compris dans l'interval [1 ; max choisi]. Attention néanmoins cette technique de génération aléatoire n'est pas très sécurisée.
 
 ### uint2str
-Convertit les uints en string
+Convertit les uints en string.
 
 ## Déploiement
 Le smart contract a été déployé sur le testnet Ropsten en utilisant infura.
