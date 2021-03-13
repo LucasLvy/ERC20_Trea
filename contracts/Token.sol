@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Trealos is ERC20 {
     uint256 private maxSupply;
-    mapping (address => uint) whitelist;
+    mapping (address => uint) public whitelist;
     mapping (address => uint) amountSentUsers;
     address[] users;
     address admin;
@@ -21,23 +21,42 @@ contract Trealos is ERC20 {
     }
 
     function getToken() external payable { 
-        require(totalSupply()+msg.value<maxSupply); 
-        require(msg.value!=0);
-        require(whitelist[msg.sender] > 0);
         uint tiers = checkTiers(msg.value, msg.sender);
+        require(
+            totalSupply()+msg.value*100*tiers<maxSupply,
+            "All tokens have been sold"
+        ); 
+        require(
+            msg.value>0,
+            "Value is negative or =0"
+        );
+        require(
+            whitelist[msg.sender] > 0,
+            "User is not whitelisted"
+        );
+        
         _mint(msg.sender, msg.value*100*tiers);
     }
 
     function adminAddUser(address newUser) public {
-        require(msg.sender == admin);
+        require(
+            msg.sender == admin,
+            "Sender is not admin"
+        );
         whitelist[newUser] = 1;
         amountSentUsers[newUser] = 0;
         users.push(newUser);
     }
 
     function changeTiers(uint tiers, address user) internal {
-        require(tiers > 0);
-        require(tiers < 4);
+        require(
+            tiers > 0,
+            "Tier is negative"
+        );
+        require(
+            tiers < 4,
+            "Tier is too high"
+        );
         whitelist[user] = tiers;
     }
 
@@ -51,12 +70,17 @@ contract Trealos is ERC20 {
         return whitelist[user];
     }
 
-    function airDrop() private {
-        require(msg.sender == admin);
+    function airDrop() public {
+        require(
+            msg.sender == admin,
+            "Sender is not admin"
+        );
         address luckyOne = users[randMod(users.length)];
         _mint(luckyOne, 100);
     }
-
+    function whiteList ()public view returns( address  [] memory){
+        return users;
+    }
     // Defining a function to generate 
     // a random number 
     function randMod(uint max) internal returns(uint)  
