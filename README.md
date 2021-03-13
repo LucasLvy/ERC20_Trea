@@ -1,6 +1,6 @@
 # Trealos
 
-Trealos (TRL) est un token créé par Quentin Gibon et Lucas LEVY. Le smart contrat de ce token est accessible sur le testnet ropsten à l’adresse `0xE91Ce607D4CEF15aB3Efc2E578bEB961Cc6e7Db3` (https://ropsten.etherscan.io/address/0xE91Ce607D4CEF15aB3Efc2E578bEB961Cc6e7Db3).
+Trealos (TRL) est un token créé par Quentin Gibon et Lucas LEVY. Le smart contrat de ce token est accessible sur le testnet ropsten à l’adresse `0x3ae006872Ea9c3c80451B6dc9569B9077525522f` (https://ropsten.etherscan.io/address/0x3ae006872Ea9c3c80451B6dc9569B9077525522f).
 
 ## Utilisation
 Pour recevoir des tokens, veuillez envoyer des ethers à l’adresse du contrat. Vous recevrez un nombre de TRL (si vous avez été préalablement ajouté dans la white list par l'admin du contrat) déterminé par la somme d'Eth envoyée puis multipliée par le tier auquel vous appartenez. Plus la somme d'Ether envoyée est importante plus vous monterez dans les tiers et plus vous recevrez donc de de TRL (le tier 3 reçoit 3x plus de TRL que le tiers 1). 
