@@ -16,26 +16,52 @@ contract Trealos is ERC20 {
 
     constructor() ERC20("Trealos", "TRL") {
         _setupDecimals(2);
-        maxSupply=1001002093092;
+        maxSupply=1001002093092000000000000000000000090000;
         admin = msg.sender;
     }
 
-    function getToken() external payable { 
-        uint tiers = checkTiers(msg.value, msg.sender);
+    function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
+    if (_i == 0) {
+        return "0";
+    }
+    uint j = _i;
+    uint len;
+    while (j != 0) {
+        len++;
+        j /= 10;
+    }
+    bytes memory bstr = new bytes(len);
+    uint k = len - 1;
+    while (_i != 0) {
+        bstr[k--] = byte(uint8(48 + _i % 10));
+        _i /= 10;
+    }
+    return string(bstr);
+    }
+    
+    fallback()
+    external
+    payable { 
+        msg.value/=1000000000000000000;
+        getToken(msg.value,msg.sender)
+    }
+
+    function getToken(uint value, address sender) internal{
+        uint tiers = checkTiers(value, sender);
         require(
-            totalSupply()+msg.value*100*tiers<maxSupply,
-            "All tokens have been sold"
+            totalSupply()+value*100*tiers<maxSupply,    //msg.value is in wei
+            string(abi.encodePacked("Amount is too high there are only ", uint2str(maxSupply-totalSupply())," TRL remaining")
         ); 
         require(
-            msg.value>0,
-            "Value is negative or =0"
+            value!=0,
+            "Value is 0"
         );
         require(
-            whitelist[msg.sender] > 0,
+            whitelist[sender] > 0,
             "User is not whitelisted"
         );
         
-        _mint(msg.sender, msg.value*100*tiers);
+        _mint(sender, value*100*tiers);
     }
 
     function adminAddUser(address newUser) public {
